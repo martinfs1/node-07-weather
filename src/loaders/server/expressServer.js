@@ -1,7 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const swaggerUi = require("swagger-ui-express");
-const cors = require("cors");
+// const cors = require("cors");
 const config = require("../../config");
 const logger = require("../logger/index");
 
@@ -9,7 +9,8 @@ class ExpressServer {
   constructor() {
     this.app = express();
     this.port = config.port;
-    this.basePathUser = `${config.api.prefix}/users`;
+    this.basePathWeather = `${config.api.prefix}/weather`;
+    this.basePathCities = `${config.api.prefix}/cities`;
 
     this._middlewares();
     this._swaggerConfig();
@@ -20,7 +21,7 @@ class ExpressServer {
   }
 
   _middlewares() {
-    this.app.use(cors())
+    // this.app.use(cors())
     this.app.use(express.json());
     this.app.use(morgan("tiny"));
   }
@@ -30,7 +31,8 @@ class ExpressServer {
       res.status(200).end();
     });
 
-    this.app.use(this.basePathUser, require("../../routes/users"));
+    this.app.use(this.basePathWeather, require("../../routes/weather"));
+    this.app.use(this.basePathCities, require("../../routes/cities"));
   }
 
   _notFound() {
@@ -57,7 +59,7 @@ class ExpressServer {
           message: err.message,
         },
       };
-      res.json(body);
+      res.status(code).json(body);
     });
   }
 
